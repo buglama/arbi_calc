@@ -1,269 +1,75 @@
 <!DOCTYPE html>
 <html lang="az">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Arbitraj Aggregator — Çoxsaytlı 1/X/2 Kalkulyatoru</title>
-    <style>
-        :root {
-            font-family: Inter, system-ui, Arial, sans-serif
-        }
-
-        body {
-            background: #f4f5f7;
-            margin: 0;
-            padding: 20px;
-            color: #111
-        }
-
-        .wrap {
-            max-width: 980px;
-            margin: 12px auto;
-            background: #fff;
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08)
-        }
-
-        h1 {
-            font-size: 20px;
-            margin: 0 0 8px
-        }
-
-        p.lead {
-            margin: 0 0 18px;
-            color: #555
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px
-        }
-
-        th,
-        td {
-            padding: 8px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-            font-size: 14px
-        }
-
-        th {
-            background: #fafafa
-        }
-
-        input[type=number] {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px
-        }
-
-        input[type=text] {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px
-        }
-
-        .controls {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px
-        }
-
-        .btn {
-            padding: 10px 12px;
-            border-radius: 8px;
-            border: none;
-            background: #0b6efd;
-            color: #fff;
-            cursor: pointer
-        }
-
-        .btn.ghost {
-            background: #eef2ff;
-            color: #0b6efd;
-            border: 1px solid #cfe0ff
-        }
-
-        .result {
-            margin-top: 14px;
-            background: #fbfdff;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #e6f0ff
-        }
-
-        .choose {
-            display: flex;
-            gap: 8px;
-            align-items: center
-        }
-
-        .small {
-            font-size: 13px;
-            color: #666
-        }
-
-        .row-actions {
-            display: flex;
-            gap: 6px
-        }
-
-        @media (max-width:680px) {
-            .controls {
-                flex-direction: column
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sadə 3-Əmsal Arbitraj Kalkulyatoru</title>
+  <style>
+    body{font-family:Arial, sans-serif;background:#f4f5f7;margin:0;padding:20px}
+    .box{max-width:520px;margin:20px auto;background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+    h1{margin:0 0 10px;font-size:20px}
+    label{display:block;margin:10px 0 4px;color:#333;font-size:14px}
+    input{width:100%;padding:8px;border-radius:8px;border:1px solid #ccc;font-size:15px}
+    button{margin-top:14px;width:100%;padding:12px;font-size:16px;border:none;border-radius:10px;background:#0b6efd;color:#fff;cursor:pointer}
+    .result{margin-top:14px;background:#f7fbff;border:1px solid #dceeff;padding:12px;border-radius:10px;white-space:pre-line;font-size:15px}
+  </style>
 </head>
-
 <body>
-    <div class="wrap">
-        <h1>Arbitraj Aggregator — Çoxsaytlı 1 / X / 2 Kalkulyatoru</h1>
-        <p class="lead">Hər bir bookmaker üçün 1 (home), X (draw), 2 (away) əmsallarını yaz. Sənaltdakı düymə ilə ən
-            yaxşı əmsalları seçib arbitraj olub-olmadığını və stake-paylanmasını göstərir.</p>
+  <div class="box">
+    <h1>Sadə Arbitraj Kalkulyatoru (1 / X / 2)</h1>
 
-        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-            <label class="small">Ümumi bank (AZN): <input id="bank" type="number" step="0.01" value="100"
-                    style="width:120px;margin-left:8px"></label>
-            <button class="btn" onclick="addRow()">+ Bookmaker əlavə et</button>
-            <button class="btn ghost" onclick="resetRows()">Sıfırla</button>
-            <button class="btn" onclick="calculate()">Hesabla</button>
-        </div>
+    <label>1 (Home) ən yüksək əmsal:</label>
+    <input id="o1" type="number" step="0.01" placeholder="məs: 2.30">
 
-        <table id="btable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Bookmaker adı</th>
-                    <th>1 (Home)</th>
-                    <th>X (Draw)</th>
-                    <th>2 (Away)</th>
-                    <th>Əməliyyat</th>
-                </tr>
-            </thead>
-            <tbody id="tbody">
-                <!-- rows will be injected -->
-            </tbody>
-        </table>
+    <label>X (Draw) ən yüksək əmsal:</label>
+    <input id="ox" type="number" step="0.01" placeholder="məs: 4.20">
 
-        <div class="result" id="result">Boş — bookmaker əlavə edib əmsalları yaz, sonra "Hesabla" bas.</div>
-    </div>
-    <a href="index.html" class="ikiems">2-emsal</a>
+    <label>2 (Away) ən yüksək əmsal:</label>
+    <input id="o2" type="number" step="0.01" placeholder="məs: 3.60">
 
-    <script>
-        // Başlangıç üçün 6 boş row əlavə edək
-        let counter = 0;
-        function addRow(name = '', o1 = '', oX = '', o2 = '') {
-            counter++;
-            const tbody = document.getElementById('tbody');
-            const tr = document.createElement('tr');
-            tr.id = 'row' + counter;
-            tr.innerHTML = `
-        <td>${counter}</td>
-        <td><input type="text" placeholder="məs: 888sport" value="${escapeHtml(name)}"></td>
-        <td><input type="number" step="0.01" min="1" placeholder="məs: 2.30" value="${o1}"></td>
-        <td><input type="number" step="0.01" min="1" placeholder="məs: 4.20" value="${oX}"></td>
-        <td><input type="number" step="0.01" min="1" placeholder="məs: 3.60" value="${o2}"></td>
-        <td class="row-actions">
-          <button class="btn ghost" onclick="removeRow('${tr.id}')">Sil</button>
-        </td>
-      `;
-            tbody.appendChild(tr);
-        }
+    <label>Ümumi bank (AZN):</label>
+    <input id="bank" type="number" step="0.01" value="100">
 
-        function removeRow(id) {
-            const el = document.getElementById(id);
-            if (el) el.remove();
-        }
+    <button onclick="calc()">Hesabla</button>
 
-        function resetRows() {
-            document.getElementById('tbody').innerHTML = '';
-            counter = 0;
-            for (let i = 0; i < 6; i++) addRow();
-            document.getElementById('result').innerText = 'Boş — bookmaker əlavə edib əmsalları yaz, sonra "Hesabla" bas.';
-        }
+    <div class="result" id="out">Nəticə burda görsənəcək.</div>
+  </div>
 
-        function escapeHtml(s) { if (!s) return ''; return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  <script>
+    function calc(){
+      const o1 = parseFloat(document.getElementById('o1').value);
+      const ox = parseFloat(document.getElementById('ox').value);
+      const o2 = parseFloat(document.getElementById('o2').value);
+      const bank = parseFloat(document.getElementById('bank').value);
 
-        // Başlangıç rows
-        resetRows();
+      if(!o1 || !ox || !o2){
+        document.getElementById('out').innerText = 'Zəhmət olmasa 3 əmsalı da yaz.';
+        return;
+      }
 
-        function calculate() {
-            const rows = Array.from(document.querySelectorAll('#tbody tr'));
-            const bank = parseFloat(document.getElementById('bank').value) || 0;
-            if (rows.length === 0) { document.getElementById('result').innerText = 'Əvvəlcə ən az 1 bookmaker əlavə et.'; return; }
+      const S = 1/o1 + 1/ox + 1/o2;
+      let text = 'S = ' + S.toFixed(6) + '\n';
 
-            let best1 = { odd: 0, book: '', rowIndex: -1 };
-            let bestX = { odd: 0, book: '', rowIndex: -1 };
-            let best2 = { odd: 0, book: '', rowIndex: -1 };
+      if(S < 1){
+        text += '\n✅ Arbitraj VAR!';
+        const st1 = ((1/o1)/S) * bank;
+        const stx = ((1/ox)/S) * bank;
+        const st2 = ((1/o2)/S) * bank;
+        const guaranteed = bank / S;
 
-            rows.forEach((r, idx) => {
-                const inputs = r.querySelectorAll('input');
-                const name = inputs[0].value.trim() || ('B' + (idx + 1));
-                const o1 = parseFloat(inputs[1].value) || 0;
-                const oX = parseFloat(inputs[2].value) || 0;
-                const o2 = parseFloat(inputs[3].value) || 0;
+        text += `\n\n1-ə qoy: ${st1.toFixed(2)} AZN`;
+        text += `\nX-ə qoy: ${stx.toFixed(2)} AZN`;
+        text += `\n2-yə qoy: ${st2.toFixed(2)} AZN`;
 
-                if (o1 > best1.odd) { best1 = { odd: o1, book: name, rowIndex: idx }; }
-                if (oX > bestX.odd) { bestX = { odd: oX, book: name, rowIndex: idx }; }
-                if (o2 > best2.odd) { best2 = { odd: o2, book: name, rowIndex: idx }; }
-            });
+        text += `\n\nZəmanətli çıxış: ${guaranteed.toFixed(2)} AZN`;
+        text += `\nQazanc: ${(guaranteed - bank).toFixed(2)} AZN`;
+      } else {
+        text += '\n❌ Arbitraj YOXDUR.';
+        text += `\nMargin: ${(S-1)*100}%`;
+      }
 
-            // Show best picks
-            const out = [];
-            out.push('Ən yaxşı əmsallar:');
-            out.push(`1 → ${best1.odd}  (${best1.book})`);
-            out.push(`X → ${bestX.odd}  (${bestX.book})`);
-            out.push(`2 → ${best2.odd}  (${best2.book})`);
-
-            // check existence
-            if (best1.odd <= 0 || bestX.odd <= 0 || best2.odd <= 0) {
-                out.push('\nXəbərdarlıq: bütün 3 nəticə üçün əmsal lazım-dir.');
-                document.getElementById('result').innerText = out.join('\n');
-                return;
-            }
-
-            const S = (1 / best1.odd) + (1 / bestX.odd) + (1 / best2.odd);
-            out.push('\nCəmi S = ' + S.toFixed(6));
-
-            if (S < 1) {
-                out.push('\n✅ Arbitraj VAR!');
-                // stakes
-                const stake1 = ((1 / best1.odd) / S) * bank;
-                const stakeX = ((1 / bestX.odd) / S) * bank;
-                const stake2 = ((1 / best2.odd) / S) * bank;
-                const guaranteed = bank / S;
-
-                out.push('\nStake bölünməsi (AZN):');
-                out.push(`${best1.book} (1): ${stake1.toFixed(2)} AZN`);
-                out.push(`${bestX.book} (X): ${stakeX.toFixed(2)} AZN`);
-                out.push(`${best2.book} (2): ${stake2.toFixed(2)} AZN`);
-
-                out.push('\nZəmanətli çıxış: ' + guaranteed.toFixed(2) + ' AZN');
-                out.push('Qazanc: ' + (guaranteed - bank).toFixed(2) + ' AZN');
-
-                // Practical notes
-                out.push('\nPraktik qeyd:');
-                out.push('- Betləri mümkün qədər tez yerləşdir.');
-                out.push('- Minimum/maximum limitlər və rounding nəzərə al.');
-                out.push('- Bəzi saytlar stake-i qəbullanmayabilir, buna görə yuvarlama lazım gələ bilər.');
-
-            } else {
-                out.push('\n❌ Arbitraj YOXDUR. Bu əmsallarla zəmanətli qazanc mümkün deyil.');
-                // show closest margin
-                const margin = (S - 1) * 100;
-                out.push('\nS-in birə olan fərqi: +' + margin.toFixed(3) + '% (bu, müsbət olanda arbitraj yoxdur)');
-            }
-
-            document.getElementById('result').innerText = out.join('\n');
-        }
-
-    </script>
+      document.getElementById('out').innerText = text;
+    }
+  </script>
 </body>
-
 </html>
